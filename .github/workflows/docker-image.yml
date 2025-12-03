@@ -17,13 +17,12 @@ jobs:
       - name: Build Docker Image
         run: docker build -t fastapi-app .
  
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.49.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
- 
-      - name: Run Trivy Scan
-        run: |
-          trivy image --severity HIGH,CRITICAL --exit-code 1 fastapi-app
+      - name: Trivy Scan Docker Image
+        uses: aquasecurity/trivy-action@0.21.0
+        with:
+          image-ref: fastapi-app
+          format: table
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          exit-code: 1   # fail pipeline if vulnerabilities found
+          severity: HIGH,CRITICAL
