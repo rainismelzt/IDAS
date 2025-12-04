@@ -16,6 +16,14 @@ jobs:
  
       - name: Build Docker Image
         run: docker build -t fastapi-app .
+
+      - name: Free disk space
+        run: |
+          echo "Before cleanup:"
+          df -h
+          docker system prune -af --volumes
+          echo "After cleanup:"
+          df -h
  
       - name: Trivy Scan Docker Image
         uses: aquasecurity/trivy-action@0.21.0
